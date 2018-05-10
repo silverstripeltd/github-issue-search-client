@@ -38,7 +38,7 @@
         <div v-else-if="error" class="error apollo">An error occured</div>
 
         <!-- Result -->
-        <div v-else-if="data" class="results apollo">
+        <div v-else-if="data.search.nodes.length > 0" class="results apollo">
           <h3 class="results__title">Search results</h3>
           <ul class="results__list">
             <SearchResult v-for="issue in data.search.nodes" :key="issue.id" :issue-data="issue" />
@@ -46,7 +46,7 @@
         </div>
 
         <!-- No result -->
-        <div v-else class="no-result apollo">No result :(</div>
+        <div v-else class="no-result apollo">No matching results</div>
       </template>
     </ApolloQuery>
 
