@@ -3,6 +3,27 @@ query($query:String!, $pageCursor:String) {
     edges {
       node {
         ...on Issue {
+          __typename,
+          id,
+          title,
+          url,
+          state,
+          createdAt,
+          repository {
+            id,
+            name,
+            url
+          },
+          labels(first:10) {
+            nodes {
+              id,
+              name,
+              color
+            }
+          }
+        }
+        ...on PullRequest {
+          __typename,
           id,
           title,
           url,

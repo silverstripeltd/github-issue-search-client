@@ -21,6 +21,11 @@
             <option value="closed">Closed issues</option>
             <option value="all">Open and closed</option>
           </select>
+          <select id="type" v-model="type" aria-label="Type" class="option-filter" @change="setType()">
+            <option value="issue">Issues only</option>
+            <option value="pr">Pull requests only</option>
+            <option value="all">Issues and pull requests</option>
+          </select>
         </div>
         <ul class="tabs">
           <li v-bind:class="{'tab': true, 'tab__active': (mode === '')}">
@@ -82,6 +87,7 @@ export default {
       includeSupported: searchParams.get('supported') !== '0',
       productTeamMode: searchParams.get('product-team-mode') === '1',
       issueStatus: searchParams.get('status') || 'open',
+      type: searchParams.get('type') || 'issue',
       loading: 0,
       allResults: [],
       error: null,
@@ -135,12 +141,22 @@ export default {
       return queryParts[this.issueStatus] || queryParts.Open;
     },
 
+    typeQuery() {
+      const typeParts = {
+        all: ' ',
+        issue: 'is:issue',
+        pr: 'is:pr',
+      };
+
+      return typeParts[this.type] || typeParts.issue;
+    },
+
     compositeQuery() {
       return `
           ${this.submitQuery}
           ${this.modeQuery}
           ${this.statusQuery}
-          is:issue
+          ${this.typeQuery}
           ${this.repoQuery}
         `;
     },
@@ -170,6 +186,9 @@ export default {
     },
     setIssueStatus() {
       this.updateURLWithParam('status', this.issueStatus);
+    },
+    setType() {
+      this.updateURLWithParam('type', this.type);
     },
     getMoreResults() {
       this.$apollo.queries.allResults.fetchMore({
